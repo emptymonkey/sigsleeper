@@ -52,7 +52,7 @@
  *		_start:
  *		mov rax, 59                   ; __NR_execve
  *		mov rdi, 0xaaaaaaaaaaaaaaaa   ; Pointer to the filename. (i.e. argv[0])
- *		mov rsi, 0xcccccccccccccccc   ; Pointer to argv array itself.
+ *		mov rsi, 0xbbbbbbbbbbbbbbbb   ; Pointer to argv array itself.
  *		xor rdx, rdx                  ; NULL pointer for envp.
  *		syscall
  *
@@ -67,7 +67,7 @@
  *
  *		48b83b00000000000000
  *		48bfaaaaaaaaaaaaaaaa
- *		48becccccccccccccccc
+ *		48bebbbbbbbbbbbbbbbb
  *		4831d2
  *		0f05
  *
@@ -78,8 +78,8 @@
  *
  *		48b83b0000000000
  *		000048bfaaaaaaaa
- *		aaaaaaaa48becccc
- *		cccccccccccc4831
+ *		aaaaaaaa48bebbbb
+ *		bbbbbbbbbbbb4831
  *		d20f05
  *
  * You can see that we now have memory addresses, which we will need to manipulate at runtime, that cross word
@@ -92,7 +92,7 @@
  *		00009090909048bf
  *		aaaaaaaaaaaaaaaa
  *		90909090909048be
- *		cccccccccccccccc
+ *		bbbbbbbbbbbbbbbb
  *		4831d20f05
  *
  */
