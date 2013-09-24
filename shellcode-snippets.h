@@ -102,17 +102,17 @@
  * Shellcode: exec() command
  *
  *		mov rax, 59                  ; __NR_execve
- *    nop                          ; Pad with NOPs to ensure placeholder alignment
- *    nop
- *    nop
- *    nop
+ *		nop                          ; Pad with NOPs to ensure placeholder alignment
+ *		nop
+ *		nop
+ *		nop
  *		mov rdi, 0xaaaaaaaaaaaaaaaa  ; placeholder for filename address
- *    nop                          ; Pad with NOPs to ensure placeholder alignment
- *    nop
- *    nop
- *    nop
- *    nop
- *    nop
+ *		nop                          ; Pad with NOPs to ensure placeholder alignment
+ *		nop
+ *		nop
+ *		nop
+ *		nop
+ *		nop
  *		mov rsi, 0xcccccccccccccccc  ; placeholder for argv address
  *		xor rdx, rdx                 ; NULL pointer for envp
  *		syscall
@@ -132,11 +132,11 @@
  *		; kill(pid, sig)
  *		mov rdi, rax                 ; pid
  *		mov rax, 62                  ; __NR_kill
- *    nop                          ; Pad with NOPs to ensure placeholder word alignment.
- *    nop
- *    nop
- *    nop
- *    nop
+ *		nop                          ; Pad with NOPs to ensure placeholder word alignment.
+ *		nop
+ *		nop
+ *		nop
+ *		nop
  *		mov rsi, 0xcccccccccccccccc  ; placeholder for signal value
  *		syscall
  *
@@ -176,7 +176,7 @@
  *		
  *		or  rax, rax                 ; Check if we are parent or child
  *		je  RUN                      ; We are the child. Jump to the nop sled and slide into the next section.
- *    nop                          ; Pad with NOPs to ensure placeholder word alignment.
+ *		nop                          ; Pad with NOPs to ensure placeholder word alignment.
  *		nop
  *		nop
  *		nop
@@ -216,7 +216,7 @@
 /*
  * Shellcode: call the payload shellcode segment.
  *
- *    nop                          ; Pad with NOPs to ensure placeholder word alignment.
+ *		nop                          ; Pad with NOPs to ensure placeholder word alignment.
  *		nop
  *		nop
  *		nop
@@ -262,7 +262,7 @@
  *		pop rsi
  *		pop rax
  *		pop rdi
- *    nop                          ; Pad with NOPs to ensure placeholder word alignment.
+ *		nop                          ; Pad with NOPs to ensure placeholder word alignment.
  *		nop
  *		mov rax, 0xcccccccccccccccc  ; Placeholder address for the original signal handler.
  *		call rax                     ; Call the original signal handler.
@@ -305,7 +305,7 @@
  * (Please pardon my nasm syntax. Obviously glibc uses gas.)
  *
  *		movq rax, 15	; __NR_rt_sigreturn
- * 		syscall
+ *		syscall
  * 
  * Thats it. Thats all there is. It's just a trampoline. If you're writting signal handlers in assembly, make sure you
  * have * a sigreturn trampolene with the sa_restorer pointing to it and the SA_RESTORER flag set accordingly. This
