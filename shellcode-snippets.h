@@ -83,7 +83,7 @@
  *		d20f05
  *
  * You can see that we now have memory addresses, which we will need to manipulate at runtime, that cross word
- * boundaries. And keep in mind that this is a little-endiean system, which further complicates the situation.
+ * boundaries. And keep in mind that this is a little-endian system, which further complicates the situation.
  * What's a coder to do?
  *
  * Pad the damn thing with NOPs until the addresses that we need to mangle *are* word aligned! 
@@ -307,8 +307,8 @@
  *		movq rax, 15	; __NR_rt_sigreturn
  *		syscall
  * 
- * Thats it. Thats all there is. It's just a trampoline. If you're writting signal handlers in assembly, make sure you
- * have * a sigreturn trampolene with the sa_restorer pointing to it and the SA_RESTORER flag set accordingly. This
+ * Thats it. Thats all there is. It's just a trampoline. If you're writing signal handlers in assembly, make sure you
+ * have a sigreturn trampoline with the sa_restorer pointing to it and the SA_RESTORER flag set accordingly. This
  * way, when you call 'ret' at the end of your assembly signal handler, you can bounce off of the trampoline and into
  * the kernel, which will happily restore your original execution state for you.
  * 
