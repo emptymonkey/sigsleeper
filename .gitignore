@@ -1,3 +1,13 @@
+# Directories for dev
+shellcode
+payloads
+
+# Binary name itself
+sigsleeper
+
+# Vim swp files
+.*.swp
+
 # Object files
 *.o
 
