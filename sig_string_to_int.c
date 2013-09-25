@@ -10,8 +10,9 @@
  *
  *	Output: The number of the signal associated with the name.
  *
- *	Assumptions: We will be leveraging the sigmaps (and supporting) data structues globally defined above. If you copy
- *		this function for later use, make sure you grab that too.
+ *	Assumptions: We will be leveraging the sigmaps (and supporting) data structues globally defined in this repo. If
+ *	you copy this function for later use, make sure you grab those too. Also note, we do not hande real-time signals
+ *	here.
  *
  **********************************************************************************************************************/
 int sig_string_to_int(char *sig_string){
@@ -20,7 +21,10 @@ int sig_string_to_int(char *sig_string){
 	int tmp_string_len;
 
 	char *string_to_match;
-
+	
+	// We want to handle strings that follow the naming convention in use by the procps version of kill. That means
+	// "USR1" is a reasonable variant of "SIGUSR1". Lets check if the string starts with "SIG". If not, we prepend
+	// it and then do our compare.
 	if(strncmp(sig_string, "SIG", 3)){
 		tmp_string_len = strlen(sig_string);
 
@@ -35,8 +39,8 @@ int sig_string_to_int(char *sig_string){
 		string_to_match = sig_string;
 	}
 
+	// Step through our handy-dandy sigmap struct and look for a match! 
 	for(i = 0; sigmap[i].number; i++){
-
 		tmp_string_len = strlen(sigmap[i].name);
 		if(!(retval_int = strncmp(string_to_match, sigmap[i].name, tmp_string_len))){
 			return(sigmap[i].number);

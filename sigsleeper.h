@@ -1,5 +1,8 @@
 
+
+
 #define _GNU_SOURCE
+
 
 #include <ctype.h>
 #include <errno.h>
@@ -12,7 +15,9 @@
 #include <unistd.h>
 
 
+
 extern int global_debug;
+
 
 
 /*
@@ -21,7 +26,9 @@ extern int global_debug;
  */
 #define BYTES_PER_WORD (__WORDSIZE/CHAR_BIT)
 
+
 #define DEFAULT_SIGNAL SIGUSR1
+
 
 #ifndef SA_RESTORER
 #define SA_RESTORER 0x04000000

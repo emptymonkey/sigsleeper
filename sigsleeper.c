@@ -1,12 +1,48 @@
 
 /**********************************************************************************************************************
+ * 
  * sigsleeper
  * 
  * emptymonkey's tool for malicious signal-handler injection.
  * 
  * 2013-09-20
  * 
- *	Outline of target's memory layout after injection.
+ * 
+ * sigsleeper is intended as a post-exploitation tool to assist with the problem of persistence. It is a
+ * proof-of-concept meant to explore the sort of persistence mechanisms for Linux environments that we can expect to
+ * see coming out of the APT space. It has not been used by the author outside of an academic instruction / demo
+ * context.
+ *
+ * Your mileage may vary.
+ *
+ *
+ * sigsleeper is a tool for injecting shellcode into the memory of a process that already exists. After placing this
+ * "payload" code in the target's memory, it then sets up a signal handler to call that payload anytime a "trigger"
+ * SIGNAL is delivered.
+ *
+ * sigsleeper provides a '-e' switch to execute a COMMAND instead of shellcode. 
+ *
+ * sigsleeper provides a '-o' switch which will configure the target process to run the original signal handler after
+ * ours has completed. (This, in essence, sets up our signal handler as a mitm.)
+ *
+ * sigsleeper provides a '-f' switch which will wrap the payload in fork() shellcode, allowing the payload to be run
+ * in a child process. This ensures the target process doesn't block when the payload is launched. (If you are looking
+ * for stealth, you will need to weigh the latency of the target processess responses with the lifespan of the
+ * payload, and the level of awareness held by the sysadmins of that target host.)
+ * 
+ * 
+ * The basic tactic we take to achieve all of this is as follows:
+ *	- Set up as much of the shellcode as possible ahead of time to minimize the duration we are PTRACE_ATTACHed.
+ *	- Use ptrace() to attach to the target.
+ *	- Use ptrace() to request the needed memory with a remote mmap().
+ *	- Use ptrace() to PTRACE_POKEDATA copy the shellcode into the remote memory. 
+ *	- Use ptrace() to call a remote mprotect() and make the memory executable.
+ *	- Use ptrace() to call a remote sigaction() to set our new signal handler.
+ * 
+ * As you can see, ptrace() is used as the main vector of this "attack". There are no "exploits" here.
+ * 
+ * 
+ * The remote mmap() call will give us a chunk of memory which we will break up into segments, as follows:
  *	("base_address" is the memory location returned by the remote mmap() call.)
  * 
  *                      base_address  -> -------------------
@@ -32,6 +68,20 @@
  *                                       |                 |    execution context and resume execution.
  *       base_address + input_len + 1 -> -------------------
  *
+ *
+ * The sequence of "payload_open -> call_payload -> payload_close" can be thought of as the new signal handler, and
+ * is responsible for execution control. Then "payload" and "default_handler" just become subroutine segments 
+ * that are called to and returned from. The end of payload_close will normally have a return call, which pops the
+ * sigreturn address off the stack and into the instruction pointer. (It was placed onto the stack by the kernel
+ * during the initial signal delivery). Once inside the sigreturn segment, the sigreturn() syscall is itself called.
+ * This invokes the kernel in order to restore the original execution state. The program will then continue along as
+ * it did before the signal had been delivered.
+ * 
+ * 
+ * The name is a reference to a sleeper cell style payload that waits for the signal to take action. Originally it was
+ * called "sigpwn", which I loved. Unfortunately, given that no actual pwning takes place, I felt compelled to change 
+ * it. 
+ * 
  * 
  **********************************************************************************************************************/
 
@@ -106,17 +156,20 @@ int sig_string_to_int(char *sig_string);
  *
  **********************************************************************************************************************/
 void usage(){
-	fprintf(stderr, "Usage: %s [-s SIGNAL] [-o] [-f] [-e COMMAND] PID\n", program_invocation_short_name);
-	fprintf(stderr, "\t-s SIGNAL  : Use SIGNAL as the trigger. Numeric value only. (SIGUSR1 is the default).\n");
+	fprintf(stderr, "\nUsage: %s [-s SIGNAL] [-o] [-f] [-e COMMAND] [-d] PID\n\n", program_invocation_short_name);
+	fprintf(stderr, "\t-s SIGNAL  : Use SIGNAL as the trigger. Signal name, short name, or number are all accepted. (SIGUSR1 is the default).\n");
 	fprintf(stderr, "\t-o         : Invoke the original signal handler after running our payload.\n");
 	fprintf(stderr, "\t-f         : Add fork() shellcode so that the payload runs in a child process, ensuring the original process does not block.\n");
 	fprintf(stderr, "\t-e COMMAND : Use exec() shellcode to launch COMMAND for the payload instead of reading from stdin.\n");
 	fprintf(stderr, "\t           : This option requires that COMMAND have an absolute path.\n");
-	fprintf(stderr, "\nNote: Without the -f flag, the target process will be consumed if your shellcode contains an exec() or you use the -e flag above.\n");
-	fprintf(stderr, "\nExample: %s -s SIGHUP -o -f -e \"/bin/ncat localhost 9999\" `ps -u root | grep nginx | awk '{print $1}'`\n", program_invocation_short_name);
+	fprintf(stderr, "\t-d         : Display debug output.\n");
+	fprintf(stderr, "\nNote: Without the '-f' flag, the target process will be consumed if your shellcode contains an exec(), or if you invoke the '-e' flag above.\n");
+	fprintf(stderr, "Note: Shellcode can be passed directly to %s on stdin. As your shellcode will be called as a function, all you need is a \"ret\" at the end.\n", program_invocation_short_name);
+	fprintf(stderr, "\nExample: %s -s SIGHUP -o -f -e '/bin/echo Hello world!' `pgrep target`\n", program_invocation_short_name);
 	fprintf(stderr, "\n");
 	exit(-1);
 }
+
 
 
 /**********************************************************************************************************************
@@ -133,12 +186,13 @@ void usage(){
  *		main() runs the show. For a more general purpose overview of the program, refer to the opening comment section.
  *
  *	Assumptions:
- *		main() uses several helper functions, included below:
+ *		main() uses several helper functions that are included with this repo:
  *			add_shellcode()
  *			string_to_vector()
  *			sig_string_to_int()
  *
- *		It also needs access to my ptrace_do library of functions. These do the heavy lifting for the ptrace syscalls.
+ *		It also needs access to the ptrace_do library of functions. These do the heavy lifting for the ptrace syscalls.
+ *		The ptrace_do repository can be found at:
  *			https://github.com/emptymonkey/ptrace_do
  *
  *
@@ -334,7 +388,7 @@ int main(int argc, char **argv){
 
 	if(signal_opt){
 
-		// Is it a simple number?
+		// Is it a simple number string?
 		tmp_int = 0;
 		errno = 0;
 		tmp_int = strtol(signal_opt, NULL, 10);
@@ -378,7 +432,6 @@ int main(int argc, char **argv){
 		}
 
 		if(tmp_int){
-
 			if(!signal_trigger_element->number){
 				for(i = 0; sigmap[i].number; i++){
 					if(sigmap[i].number == tmp_int){
@@ -402,10 +455,12 @@ int main(int argc, char **argv){
 		}
 	}
 
+	// Do a sanity check for the signal_trigger_element.
 	if(!signal_trigger_element->number){
 		error(-1, 0, "Error: Unknown signal: %s", signal_opt);
 	}
 
+	// If only we could...
 	if((signal_trigger_element->number == SIGKILL) || (signal_trigger_element->number == SIGSTOP)){
 		error(-1, 0, "The SIGNAL trigger cannot be either SIGKILL or SIGSTOP.");
 	}
@@ -1077,5 +1132,4 @@ CLEAN_UP:
 
 	return(exit_val);
 }
-
 
