@@ -1,6 +1,16 @@
 # sigsleeper #
 
-_sigsleeper_ is a tool for [injecting](http://en.wikipedia.org/wiki/Ptrace) a payload into a target process on [Linux](http://en.wikipedia.org/wiki/Linux) and setting it up as a [signal handler](http://en.wikipedia.org/wiki/Unix_signal). The payload can be either [shellcode](http://en.wikipedia.org/wiki/Shellcode) or [commands to execute](http://en.wikipedia.org/wiki/Exec_%28computing%29). The payload is then run anytime a "trigger" signal is received. _sigsleeper_ can also be used to hijack an existing signal handler, running the original signal handler after the completion of the payload.
+_sigsleeper_ is a tool for setting up [sleeper code](http://en.wikipedia.org/wiki/Sleeper_cell) in [Linux](http://en.wikipedia.org/wiki/Linux).
+
+**What do you mean by "sleeper code"?**
+
+Sleeper code would be code that sits unseen on a target system. This is a method for hiding a payload inside of legitimate processes on Linux. _sigsleeper_ does this by [injecting](http://en.wikipedia.org/wiki/Ptrace) the payload into a target process and setting it up as a [signal handler](http://en.wikipedia.org/wiki/Unix_signal). The payload can be either [shellcode](http://en.wikipedia.org/wiki/Shellcode) or [commands to execute](http://en.wikipedia.org/wiki/Exec_%28computing%29). The payload is then run anytime a "trigger" signal is received. _sigsleeper_ can also be used to hijack an existing signal handler, running the original signal handler after the completion of the payload.
+
+**That's awesome! [1337 h4X0rZ rUL3!!](http://hackertyper.com/)**
+
+While I do think it's pretty neat, this really isn't ["hacking"](http://en.wikipedia.org/wiki/Hacker_%28computer_security%29). There are no exploits here. _shelljack_ takes advantage of some Linux [deep magic](http://en.wikipedia.org/wiki/Deep_magic) that is completely legitimate, although often not well understood. In order to shelljack a target, you will need the appropriate permissions to do so.
+
+While this may not be a ["sploit"](http://en.wikipedia.org/wiki/Sploit), it is a very handy tool designed to empower [pentesters](http://en.wikipedia.org/wiki/Pentester) and educators.
 
 **What are signals and signal handlers?**
 
