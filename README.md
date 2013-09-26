@@ -56,7 +56,7 @@ And from the glibc source, read:
 
 # Example #
 
-As an example, we will embed a call to '_/bin/echo Hello world!_' into the shell we are logged into. We can then trigger it by using the kill command to send SIGUSR1 to our current shell. 
+As an example, we will embed a call to _'/bin/echo Hello world!'_ into the shell we are logged into. We can then trigger it by using the kill command to send SIGUSR1 to our current shell. 
 
 	empty@monkey:~$ sigsleeper -f -e '/bin/echo Hello world!' $$
 	empty@monkey:~$ kill -USR1 $$
