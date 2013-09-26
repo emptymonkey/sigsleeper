@@ -4,7 +4,7 @@ _sigsleeper_ is a tool for setting up [sleeper code](http://en.wikipedia.org/wik
 
 **What do you mean by "sleeper code"?**
 
-Sleeper code would be code that sits unseen on a target system. This is a method for hiding a payload inside of legitimate processes on Linux. _sigsleeper_ does this by [injecting](http://en.wikipedia.org/wiki/Ptrace) the payload into a target process and setting it up as a [signal handler](http://en.wikipedia.org/wiki/Unix_signal). The payload can be either [shellcode](http://en.wikipedia.org/wiki/Shellcode) or [commands to execute](http://en.wikipedia.org/wiki/Exec_%28computing%29). The payload is then run anytime a "trigger" signal is received. _sigsleeper_ can also be used to hijack an existing signal handler, running the original signal handler after the completion of the payload.
+Sleeper code would be code that sits unseen on a target system. In this case, _sigsleeper_ hides its payload inside of a legitimate process on Linux. It does this by [injecting](http://en.wikipedia.org/wiki/Ptrace) the payload into a target process and setting it up as a [signal handler](http://en.wikipedia.org/wiki/Unix_signal). The payload can be either [shellcode](http://en.wikipedia.org/wiki/Shellcode) or [commands to execute](http://en.wikipedia.org/wiki/Exec_%28computing%29). The payload is then run anytime a "trigger" signal is received. _sigsleeper_ can also be used to hijack an existing signal handler, running the original signal handler after the completion of the payload.
 
 **That's awesome! [1337 h4X0rZ rUL3!!](http://hackertyper.com/)**
 
