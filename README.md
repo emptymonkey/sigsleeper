@@ -43,6 +43,10 @@ And from the glibc source, read:
 * sysdeps/posix/signal.c
 * sysdeps/unix/sysv/linux/x86_64/sigaction.c
 
+**What Architectures / OSs will this run on?**
+
+Currently, _sigsleeper_ will only run on x86_64 Linux. Because it uses the Linux ptrace interface to inject assembly language [syscalls](http://en.wikipedia.org/wiki/Syscall) into a target process, nothing here is portable. That said, check out my other project, [_ptrace_do_](https://github.com/emptymonkey/ptrace_do). If I get around to supporting _ptrace_do_ for other architectures, then porting _shelljack_ shouldn't be too hard.
+
 # Usage #
 
 	Usage: sigsleeper [-s SIGNAL] [-o] [-f] [-e COMMAND] [-d] PID
