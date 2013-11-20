@@ -1,6 +1,6 @@
 # sigsleeper #
 
-_sigsleeper_ is a tool for setting up [sleeper code](http://en.wikipedia.org/wiki/Sleeper_cell) in [Linux](http://en.wikipedia.org/wiki/Linux).
+_sigsleeper_ is a tool for setting up [sleeper](http://en.wikipedia.org/wiki/Sleeper_cell) code in [Linux](http://en.wikipedia.org/wiki/Linux).
 
 **What do you mean by "sleeper code"?**
 
