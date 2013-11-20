@@ -45,7 +45,7 @@ And from the glibc source, read:
 
 **What Architectures / OSs will this run on?**
 
-Currently, _sigsleeper_ will only run on x86_64 Linux. Because it uses the Linux ptrace interface to inject assembly language [syscalls](http://en.wikipedia.org/wiki/Syscall) into a target process, nothing here is portable. That said, check out my other project, [_ptrace_do_](https://github.com/emptymonkey/ptrace_do). If I get around to supporting _ptrace_do_ for other architectures, then porting _shelljack_ shouldn't be too hard.
+Currently, _sigsleeper_ will only run on x86_64 Linux. Because it uses the Linux ptrace interface to inject assembly language [syscalls](http://en.wikipedia.org/wiki/Syscall) into a target process, nothing here is portable. That said, check out my other project, [<i>ptrace_do</i>](https://github.com/emptymonkey/ptrace_do). If I get around to supporting <i>ptrace_do</i> for other architectures, then porting _shelljack_ shouldn't be too hard.
 
 # Usage #
 
@@ -70,7 +70,7 @@ As an example, we will embed a call to _'/bin/echo Hello world!'_ into the shell
 
 To help with the heavy lifting, I've written a supporting library that is needed by _sigsleeper_:
 
-* [_ptrace_do_](https://github.com/emptymonkey/ptrace_do): A ptrace library for easy syscall injection in Linux.
+* [<i>ptrace_do</i>](https://github.com/emptymonkey/ptrace_do): A ptrace library for easy syscall injection in Linux.
 
 # Installation #
 
