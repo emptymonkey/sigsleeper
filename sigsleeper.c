@@ -93,6 +93,10 @@
 
 
 
+char *CALLING_CARD = "@emptymonkey - https://github.com/emptymonkey";
+
+
+
 int global_debug = 0;
 
 
