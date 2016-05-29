@@ -45,7 +45,7 @@ And from the glibc source, read:
 
 **What Architectures / OSs will this run on?**
 
-Currently, _sigsleeper_ will only run on x86_64 Linux. Because it uses the Linux ptrace interface to inject assembly language [syscalls](http://en.wikipedia.org/wiki/Syscall) into a target process, nothing here is portable. That said, check out my other project, [<i>ptrace_do</i>](https://github.com/emptymonkey/ptrace_do). If I get around to supporting <i>ptrace_do</i> for other architectures, then porting _shelljack_ shouldn't be too hard.
+Currently, _sigsleeper_ will only run on x86_64 Linux. Because it uses the Linux ptrace interface to inject assembly language [syscalls](http://en.wikipedia.org/wiki/Syscall) into a target process, nothing here is portable. That said, check out my other project, [<i>ptrace_do</i>](https://github.com/emptymonkey/ptrace_do). If I get around to supporting <i>ptrace_do</i> for other architectures, then porting _sigsleeper_ shouldn't be too hard.
 
 # Usage #
 
