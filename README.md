@@ -6,12 +6,6 @@ _sigsleeper_ is a tool for setting up [sleeper](http://en.wikipedia.org/wiki/Sle
 
 Sleeper code would be code that sits unseen on a target system. In this case, _sigsleeper_ hides its payload inside of a legitimate process on Linux. It does this by [injecting](http://en.wikipedia.org/wiki/Ptrace) the payload into a target process and setting it up as a [signal handler](http://en.wikipedia.org/wiki/Unix_signal). The payload can be either [shellcode](http://en.wikipedia.org/wiki/Shellcode) or [commands to execute](http://en.wikipedia.org/wiki/Exec_%28computing%29). The payload is then run anytime a "trigger" signal is received. _sigsleeper_ can also be used to hijack an existing signal handler, running the original signal handler after the completion of the payload.
 
-**That's awesome! [1337 h4X0rZ rUL3!!](http://hackertyper.com/)**
-
-While I do think it's pretty neat, this really isn't ["hacking"](http://en.wikipedia.org/wiki/Hacker_%28computer_security%29). There are no exploits here. _shelljack_ takes advantage of some Linux [deep magic](http://en.wikipedia.org/wiki/Deep_magic) that is completely legitimate, although often not well understood. In order to shelljack a target, you will need the appropriate permissions to do so.
-
-While this may not be a ["sploit"](http://en.wikipedia.org/wiki/Sploit), it is a very handy tool designed to empower [pentesters](http://en.wikipedia.org/wiki/Pentester) and educators.
-
 **What are signals and signal handlers?**
 
 A signal handler is a piece of code that is run anytime a process receives a signal. Signals are a mechanism used to notify processes of any number of events. Normally, this is an asynchronous notification from the kernel. (The signal can originate from another process, such as kill, but are delivered through the kernel.)
@@ -82,8 +76,3 @@ To help with the heavy lifting, I've written a supporting library that is needed
 	git clone https://github.com/emptymonkey/sigsleeper.git
 	cd sigsleeper
 	make
-
-## A Quick Note on Ethics ##
-
-I write and release these tools with the intention of educating the larger [IT](http://en.wikipedia.org/wiki/Information_technology) community and empowering legitimate pentesters. If I can write these tools in my spare time, then rest assured that the dedicated malicious actors have already developed versions of their own.
-
