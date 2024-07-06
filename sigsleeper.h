@@ -100,8 +100,8 @@ struct argv_payload {
 
 /* This is how we map signal names to their numbers and default actions. */
 struct sigmap_element {
-	char *name;
 	int number;
+	char *name;
 	int default_action;
 };
 
